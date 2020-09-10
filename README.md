@@ -1,24 +1,23 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## Project setup instruction
+```
+git clone clone_url
+cd project_dir
+bundle install
+```
+## Transform user
+```
+rake transform_user:run
+```
+## Database
+No database needed.
 
-Things you may want to cover:
+## Configuration
+Please update these ENV variable per envirnonment.
+> USERS_API_BASE_URL    
+*default: https://test-users-2020.herokuapp.com/api/users*
 
-* Ruby version
 
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+> AUTHORIZATION_TOKEN  
+*default: abc123*
