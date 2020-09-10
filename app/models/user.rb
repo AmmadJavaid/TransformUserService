@@ -5,8 +5,8 @@ class User
 
   EMAIL_REGEX = /\A[^@]+@[^@]+\z/
 
-  validates_presence_of :first_name, :last_name
-  validates_format_of :phone, with: /\d{10}/
+  validates_presence_of :first_name, :last_name, :email
+  validates_format_of :phone, with: /\A\d{10}\z/
   validates_format_of :email, with: EMAIL_REGEX
 
   def initialize(data)
@@ -14,11 +14,17 @@ class User
     self.last_name = data['lastName']
     self.email = data['email']
     self.more_data = data['moreData']
-    self.phone = data.dig('moreData', 'phone')
+    self.phone = data['moreData'].delete('phone')
+  end
+
+  def phone=(value)
+    return if value.blank?
+
+    @phone = value.gsub(/[^0-9]/, '')
   end
 
   def format_phone
-    "(#{phone[0..2]}) #{phone[3..5]}-#{phone[6..10]}"
+    "(#{phone[0..2]}) #{phone[3..5]}-#{phone[6..9]}"
   end
 
   def unique?(records)
@@ -30,14 +36,6 @@ class User
     end
 
     true
-  end
-
-  def valid?
-    super
-    self.errors.delete(:phone) if self.errors[:email].blank?
-    self.errors.delete(:email) if self.errors[:phone].blank?
-
-    self.errors.empty?
   end
 
   def collate!(duplicate)
@@ -58,5 +56,13 @@ class User
       "phone": self.format_phone,
       "moreData": self.more_data
     }
+  end
+
+  def valid?
+    super
+    self.errors.delete(:phone) if self.errors[:email].blank?
+    self.errors.delete(:email) if self.errors[:phone].blank?
+
+    self.errors.empty?
   end
 end
